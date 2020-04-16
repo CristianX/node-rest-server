@@ -17,11 +17,28 @@ app.get('/usuario', function(req, res) {
 
 app.post('/usuario', function(req, res) {
 
+    // Para obtener los heders que se mandan en la url
     let body = req.body;
 
-    res.json({
-        persona: body
-    });
+    if (body.nombre === undefined) {
+
+        // si no se manda un parámetro 
+        res.status(400).json({
+            ok: false,
+            mensaje: 'El nombre es necesario'
+        });
+
+    } else {
+
+        res.json({
+            persona: body
+        });
+
+    }
+
+
+
+
 });
 app.put('/usuario/:id', function(req, res) {
 

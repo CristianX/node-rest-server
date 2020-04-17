@@ -72,13 +72,30 @@ app.post('/usuario', function(req, res) {
 
 
 });
+
+// PUT
 app.put('/usuario/:id', function(req, res) {
 
     // captando el id de la url
     let id = req.params.id;
+    let body = req.body;
 
-    res.json({
-        id
+    // Encontrando el usuario por su id y actualizandoló
+    // Para retornar el usuario actualizado hay que mandar en options la variable new
+    Usuario.findByIdAndUpdate(id, body, { new: true }, (err, usuarioDB) => {
+
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+
+        // Regresando todo el usuarioDB
+        res.json({
+            ok: true,
+            usuario: usuarioDB
+        });
     });
 });
 app.delete('/usuario', function(req, res) {

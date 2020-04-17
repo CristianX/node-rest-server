@@ -5,6 +5,9 @@ const app = express();
 // Bcrypt, encriptación de contraseñas
 const bcrypt = require('bcrypt');
 
+// Underscore, aplica las posibilidades de JAVASCRIPT; _ estandar de uso de underscore
+const _ = require('underscore');
+
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
@@ -78,11 +81,14 @@ app.put('/usuario/:id', function(req, res) {
 
     // captando el id de la url
     let id = req.params.id;
-    let body = req.body;
+
+    // Añadiendo campos que si se pueden actualizar 
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
     // Encontrando el usuario por su id y actualizandoló
     // Para retornar el usuario actualizado hay que mandar en options la variable new
-    Usuario.findByIdAndUpdate(id, body, { new: true }, (err, usuarioDB) => {
+    // runValidators corre todas las validaciones echas en el esquema
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
 
         if (err) {
             return res.status(400).json({

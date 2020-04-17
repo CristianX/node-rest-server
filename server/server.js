@@ -14,6 +14,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json (middleware)
 app.use(bodyParser.json());
 
+// Mongoose
+const mongoose = require('mongoose');
+
+// Get
 app.get('/usuario', function(req, res) {
     res.json('get usuario')
 });
@@ -55,6 +59,18 @@ app.put('/usuario/:id', function(req, res) {
 app.delete('/usuario', function(req, res) {
     res.json('delete usuario')
 });
+
+// Conexión a BDD
+// Aunque la base de datos no exista se puede hacer una conexión ahí
+mongoose.connect('mongodb://localhost:27017/cafe', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}, (err, res) => {
+    if (err) throw (err);
+
+    console.log('Base de datos ONLINE');
+});
+
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto', process.env.PORT);

@@ -11,7 +11,7 @@ const _ = require('underscore');
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
-// Get
+// GET
 app.get('/usuario', function(req, res) {
 
     // Para indicar desde donde se muestra la paginación
@@ -24,7 +24,7 @@ app.get('/usuario', function(req, res) {
 
     // find regresa todos los registros y exec ejecuta el comando
     // Para usar paginación (obtener los siguientes registros) se usa skip
-    Usuario.find({}).skip(desde).limit(limite).exec((err, usuarios) => {
+    Usuario.find({ /* aquí va una condición como google:true si se desea */ }).skip(desde).limit(limite).exec((err, usuarios) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -32,10 +32,18 @@ app.get('/usuario', function(req, res) {
             });
         }
 
-        res.json({
-            ok: true,
-            usuarios
+        // Recuperando número total de registros
+        Usuario.count({ /* aquí va una condición como google:true si se desea */ }, (err, conteo) => {
+
+            res.json({
+                ok: true,
+                usuarios,
+                cuantos: conteo
+            });
+
         });
+
+
 
     });
 

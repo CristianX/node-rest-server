@@ -2,6 +2,9 @@
 const express = require('express');
 const app = express();
 
+// Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
+const Usuario = require('../models/usuario');
+
 // Get
 app.get('/usuario', function(req, res) {
     res.json('get usuario')
@@ -12,21 +15,52 @@ app.post('/usuario', function(req, res) {
     // Para obtener los heders que se mandan en la url
     let body = req.body;
 
-    if (body.nombre === undefined) {
 
-        // si no se manda un parámetro 
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
+    // POST
+    // Pasando datos del body (headers) al modelo de usuario
+    let usuario = new Usuario({
+        nombre: body.nombre,
+        email: body.email,
+        password: body.password,
+        role: body.role
+    });
 
-    } else {
 
+    // Grabando en la base de datos
+    // Se puede recibir un error o el parametro usuarioDB
+    usuario.save((err, usuarioDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+
+        // Regresando todo el usuarioDB
         res.json({
-            persona: body
+            ok: true,
+            usuario: usuarioDB
         });
 
-    }
+    });
+
+
+
+    // if (body.nombre === undefined) {
+
+    //     // si no se manda un parámetro 
+    //     res.status(400).json({
+    //         ok: false,
+    //         mensaje: 'El nombre es necesario'
+    //     });
+
+    // } else {
+
+    //     res.json({
+    //         persona: body
+    //     });
+
+    // }
 
 
 

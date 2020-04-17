@@ -3,3 +3,4 @@
 - Body Parser: `npm install body-parser --save`
 - Mongoose: `npm install mongoose --save`
 - Mongoose Unique Validatoe: `npm install --save mongoose-unique-validator`
+- Bcrypt, encriptar contraseñas `npm i bcrypt --save`

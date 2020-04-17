@@ -53,6 +53,16 @@ let usuarioSchema = new Schema({
 
 });
 
+// Impidiendo que se regrese la contraseña
+// Mandando toda la impresion de los campos a un esquema JSON
+usuarioSchema.methods.toJSON = function() {
+    let user = this;
+    let userObject = user.toObject();
+    delete userObject.password;
+
+    return userObject;
+}
+
 // Usando pluguin para validar el error de duplicado de correo
 usuarioSchema.plugin(uniqueValidator, {
     message: '{PATH} debe ser único'

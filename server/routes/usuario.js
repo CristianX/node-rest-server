@@ -2,6 +2,9 @@
 const express = require('express');
 const app = express();
 
+// Bcrypt, encriptación de contraseñas
+const bcrypt = require('bcrypt');
+
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
@@ -21,7 +24,8 @@ app.post('/usuario', function(req, res) {
     let usuario = new Usuario({
         nombre: body.nombre,
         email: body.email,
-        password: body.password,
+        // Encriptando directo sin uso de callbacks hashSync, recibiendo la data y el número de vueltas a dar
+        password: bcrypt.hashSync(body.password, 10),
         role: body.role
     });
 
@@ -35,6 +39,8 @@ app.post('/usuario', function(req, res) {
                 err
             });
         }
+
+        // usuarioDB.password = null;
 
         // Regresando todo el usuarioDB
         res.json({

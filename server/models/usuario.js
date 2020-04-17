@@ -3,6 +3,16 @@ const mongoose = require('mongoose');
 // Obteniendo esquemas de mongoose
 let Schema = mongoose.Schema;
 
+// Validador unico: para hacer user friendly al error que sale cuando se duplica el correo
+const uniqueValidator = require('mongoose-unique-validator');
+
+// Roles válidos
+let rolesValidos = {
+    values: ['ADMIN_ROLE', 'USER_ROLE'],
+    // Usando mongoose unique validator
+    message: '{VALUE} no es un rol válido'
+}
+
 // Declarando esquema
 let usuarioSchema = new Schema({
     nombre: {
@@ -13,6 +23,7 @@ let usuarioSchema = new Schema({
 
     email: {
         type: String,
+        unique: true,
         required: [true, 'El correo es necesario']
     },
 
@@ -27,7 +38,8 @@ let usuarioSchema = new Schema({
     },
     role: {
         type: String,
-        default: 'USER_ROLE'
+        default: 'USER_ROLE',
+        enum: rolesValidos
     },
     estado: {
         type: Boolean,
@@ -39,6 +51,11 @@ let usuarioSchema = new Schema({
     }
 
 
+});
+
+// Usando pluguin para validar el error de duplicado de correo
+usuarioSchema.plugin(uniqueValidator, {
+    message: '{PATH} debe ser único'
 });
 
 // Se exporta el modelo Usuario con la funcionalidad de usuarioSchema

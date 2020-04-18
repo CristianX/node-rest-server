@@ -24,7 +24,8 @@ const mongoose = require('mongoose');
 
 // Conexión a BDD
 // Aunque la base de datos no exista se puede hacer una conexión ahí
-mongoose.connect('mongodb://localhost:27017/cafe', {
+// process.env.URLDB personalizado en config.js
+mongoose.connect(process.env.URLDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true

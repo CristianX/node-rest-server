@@ -24,7 +24,8 @@ app.get('/usuario', function(req, res) {
 
     // find regresa todos los registros y exec ejecuta el comando
     // Para usar paginación (obtener los siguientes registros) se usa skip
-    Usuario.find({ /* aquí va una condición como google:true si se desea */ }).skip(desde).limit(limite).exec((err, usuarios) => {
+    // en el campo'nombre email' solo se retorna los campos que se resean mostrar
+    Usuario.find({ /* aquí va una condición como google:true si se desea */ }, 'nombre email role estado google img').skip(desde).limit(limite).exec((err, usuarios) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -50,6 +51,7 @@ app.get('/usuario', function(req, res) {
 
 });
 
+// POST
 app.post('/usuario', function(req, res) {
 
     // Para obtener los heders que se mandan en la url
@@ -138,8 +140,42 @@ app.put('/usuario/:id', function(req, res) {
         });
     });
 });
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario')
+
+
+// DELETE
+app.delete('/usuario/:id', function(req, res) {
+    // res.json('delete usuario')
+
+    let id = req.params.id;
+
+    // Eliminación física; busca y elimina
+    Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!usuarioBorrado) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Usuario no encontrado'
+                }
+            });
+        }
+
+        res.json({
+            ok: true,
+            usuario: usuarioBorrado
+        });
+
+
+    });
+
+
 });
 
 // para exportar un objeto ya implementado

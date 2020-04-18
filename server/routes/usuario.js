@@ -11,6 +11,10 @@ const _ = require('underscore');
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
+//Mongooose
+const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
+
 // GET
 app.get('/usuario', function(req, res) {
 
@@ -25,7 +29,8 @@ app.get('/usuario', function(req, res) {
     // find regresa todos los registros y exec ejecuta el comando
     // Para usar paginación (obtener los siguientes registros) se usa skip
     // en el campo'nombre email' solo se retorna los campos que se resean mostrar
-    Usuario.find({ /* aquí va una condición como google:true si se desea */ }, 'nombre email role estado google img').skip(desde).limit(limite).exec((err, usuarios) => {
+    // el { estado: true } es para encontrar registros que cumplan unicamente con esa condición
+    Usuario.find({ estado: true }, 'nombre email role estado google img').skip(desde).limit(limite).exec((err, usuarios) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -34,7 +39,8 @@ app.get('/usuario', function(req, res) {
         }
 
         // Recuperando número total de registros
-        Usuario.count({ /* aquí va una condición como google:true si se desea */ }, (err, conteo) => {
+        // el { estado: true } es para encontrar registros que cumplan unicamente con esa condición
+        Usuario.countDocuments({ estado: true }, (err, conteo) => {
 
             res.json({
                 ok: true,
@@ -142,14 +148,57 @@ app.put('/usuario/:id', function(req, res) {
 });
 
 
-// DELETE
+// DELETE DEFINITIVO
+// app.delete('/usuario/:id', function(req, res) {
+//     // res.json('delete usuario')
+
+//     let id = req.params.id;
+
+//     // Eliminación física; busca y elimina
+//     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+
+//         if (err) {
+//             return res.status(400).json({
+//                 ok: false,
+//                 err
+//             });
+//         }
+
+//         if (!usuarioBorrado) {
+//             return res.status(400).json({
+//                 ok: false,
+//                 err: {
+//                     message: 'Usuario no encontrado'
+//                 }
+//             });
+//         }
+
+//         res.json({
+//             ok: true,
+//             usuario: usuarioBorrado
+//         });
+
+
+//     });
+
+
+// });
+
+// DELETE  de cambio de estado
 app.delete('/usuario/:id', function(req, res) {
     // res.json('delete usuario')
 
     let id = req.params.id;
 
     // Eliminación física; busca y elimina
-    Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    // Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+
+
+    // Para actualizar el estado
+    let cambiaEstado = {
+        estado: false
+    };
+    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
 
         if (err) {
             return res.status(400).json({

@@ -14,8 +14,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json (middleware)
 app.use(bodyParser.json());
 
-// Importando routes del usuario
-app.use(require('./routes/usuario'));
+// Importando rutas desde el archivo index en routes (Configuración global de rutas)
+app.use(require('./routes/index'));
+
 
 // Mongoose
 const mongoose = require('mongoose');

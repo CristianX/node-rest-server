@@ -5,6 +5,9 @@ const app = express();
 // Bcrypt, encriptación de contraseñas
 const bcrypt = require('bcrypt');
 
+// NPM JSON WEB TOKEN
+const jwt = require('jsonwebtoken');
+
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
@@ -44,10 +47,15 @@ app.post('/login', (req, res) => {
             });
         }
 
+        // Generando token con jason web token
+        let token = jwt.sign({
+            usuario: usuarioDB
+        }, process.env.SEED, { expiresIn: provess.env.CADUCIDAD_TOKEN }); // 60 * 60 * 24 * 30 es decir que expira en 30 días
+
         res.json({
             ok: true,
             usuario: usuarioDB,
-            toke: '123'
+            token
         });
 
     });

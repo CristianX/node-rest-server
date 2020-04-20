@@ -6,13 +6,21 @@ const express = require('express');
 const app = express();
 
 // Body Parser
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 // parse application/x-www-form-urlencoded (middleware)
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json (middleware)
 app.use(bodyParser.json());
+
+
+// Importando path (no hay que instalarlo)
+const path = require('path');
+// Habilitando la carpeta public
+app.use(express.static(path.resolve(__dirname, '../public')));
+
+
 
 // Importando rutas desde el archivo index en routes (Configuración global de rutas) (app.use siempre son middlewares)
 app.use(require('./routes/index'));

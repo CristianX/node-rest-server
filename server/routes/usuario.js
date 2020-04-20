@@ -63,7 +63,7 @@ app.get('/usuario', verificaToken, (req, res) => {
 });
 
 // POST
-app.post('/usuario', function(req, res) {
+app.post('/usuario', verificaToken, (req, res) => {
 
     // Para obtener los heders que se mandan en la url
     let body = req.body;
@@ -124,7 +124,7 @@ app.post('/usuario', function(req, res) {
 });
 
 // PUT
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', verificaToken, (req, res) => {
 
     // captando el id de la url
     let id = req.params.id;
@@ -190,7 +190,7 @@ app.put('/usuario/:id', function(req, res) {
 // });
 
 // DELETE  de cambio de estado
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', verificaToken, function(req, res) {
     // res.json('delete usuario')
 
     let id = req.params.id;

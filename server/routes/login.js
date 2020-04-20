@@ -47,7 +47,7 @@ app.post('/login', (req, res) => {
             });
         }
 
-        // Generando token con jason web token
+        // Generando token con jason web token (Generando Payload)
         let token = jwt.sign({
             usuario: usuarioDB
         }, process.env.SEED, { expiresIn: provess.env.CADUCIDAD_TOKEN }); // 60 * 60 * 24 * 30 es decir que expira en 30 días

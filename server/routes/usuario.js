@@ -13,7 +13,7 @@ const Usuario = require('../models/usuario');
 
 // Llamando middleware personalizado
 //{ } para usar la destructuración a dentro de esto mando verificaToken por que es lo que quiero obtener
-const { verificaToken } = require('../middlewares/autenticacion');
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
 
 //Mongooose
 const mongoose = require('mongoose');
@@ -63,7 +63,7 @@ app.get('/usuario', verificaToken, (req, res) => {
 });
 
 // POST
-app.post('/usuario', verificaToken, (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     // Para obtener los heders que se mandan en la url
     let body = req.body;
@@ -124,7 +124,7 @@ app.post('/usuario', verificaToken, (req, res) => {
 });
 
 // PUT
-app.put('/usuario/:id', verificaToken, (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     // captando el id de la url
     let id = req.params.id;
@@ -190,7 +190,7 @@ app.put('/usuario/:id', verificaToken, (req, res) => {
 // });
 
 // DELETE  de cambio de estado
-app.delete('/usuario/:id', verificaToken, function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
     // res.json('delete usuario')
 
     let id = req.params.id;

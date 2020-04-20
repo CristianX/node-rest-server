@@ -31,7 +31,28 @@ let verificaToken = (req, res, next) => {
     });
 };
 
+//===========================
+//Verificar AdminRole
+//===========================
+let verificaAdmin_Role = (req, res, next) => {
+
+    // Obteniendo el usuario
+    let usuario = req.usuario;
+
+    if (usuario.role !== 'ADMIN_ROLE') {
+        return res.status(401).json({
+            ok: false,
+            err: {
+                message: 'El usuario no es administrador'
+            }
+        });
+    }
+
+    next();
+}
+
 // Para funciones el export es asi
 module.exports = {
-    verificaToken
+    verificaToken,
+    verificaAdmin_Role
 }

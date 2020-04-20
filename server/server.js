@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json (middleware)
 app.use(bodyParser.json());
 
-// Importando rutas desde el archivo index en routes (Configuración global de rutas)
+// Importando rutas desde el archivo index en routes (Configuración global de rutas) (app.use siempre son middlewares)
 app.use(require('./routes/index'));
 
 

@@ -11,12 +11,17 @@ const _ = require('underscore');
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
+// Llamando middleware personalizado
+//{ } para usar la destructuración a dentro de esto mando verificaToken por que es lo que quiero obtener
+const { verificaToken } = require('../middlewares/autenticacion');
+
 //Mongooose
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 
 // GET
-app.get('/usuario', function(req, res) {
+// No se necesita parentesis ni nada por que no se esta ejecutando, es el middleware que se va a disparar cuando se acceda a esa ruta
+app.get('/usuario', verificaToken, (req, res) => {
 
     // Para indicar desde donde se muestra la paginación
     let desde = req.query.desde || 0;

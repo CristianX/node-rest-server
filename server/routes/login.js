@@ -8,12 +8,20 @@ const bcrypt = require('bcrypt');
 // NPM JSON WEB TOKEN
 const jwt = require('jsonwebtoken');
 
+
+// Google Auth Client
+// CLIENT_ID importando desde config/config.js
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.CLIENT_ID);
+
+
+
 // Llamando el modelo de usuario, la nomenclatura es con mayuscula al comienzo
 const Usuario = require('../models/usuario');
 
 
 
-
+// Login Normal
 app.post('/login', (req, res) => {
 
     let body = req.body;
@@ -62,6 +70,38 @@ app.post('/login', (req, res) => {
 
 });
 
+// Configuraciones de google
+async function verify(token) {
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+        // Or, if multiple clients access the backend:
+        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+    });
+    const payload = ticket.getPayload();
+
+    // Payload recibe todos los datos del usuario
+    console.log(payload.name);
+    console.log(payload.email);
+    console.log(payload.picture);
+}
+
+
+
+// Login con Google
+app.post('/google', (req, res) => {
+
+    let token = req.body.idtoken;
+
+
+    // llamando verify
+    verify(token);
+
+    res.json({
+        token
+    })
+
+});
 
 
 

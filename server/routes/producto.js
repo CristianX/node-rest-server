@@ -94,6 +94,35 @@ app.get('/productos/:id', verificaToken, (req, res) => {
     });
 });
 
+
+// ============================
+// Buscar productos por BDD
+// ============================
+app.get('/productos/buscar/:termino', verificaToken, (req, res) => {
+
+    // Obteniendo término de la url
+    let termino = req.params.termino;
+
+    // Enviando expresión regular para búsqueda más flexible, no hay que importar nada, esto es una función de js normal
+    // La i es para que sea insensible a las mayusq y minusq
+    let regex = new RegExp(termino, 'i');
+
+    Producto.find({ nombre: regex, disponible: true }).populate('categoria', 'descripcion').exec((err, productos) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        res.json({
+            ok: true,
+            productos
+        });
+    });
+
+});
+
 // ============================
 // POST Obtener producto
 // ============================

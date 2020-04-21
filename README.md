@@ -7,3 +7,4 @@
 - UnderScore `npm install underscore --save`
 - JSON Web Token `npm install jsonwebtoken --save`
 - Google Auth Library `npm install google-auth-library --save`
+- Express FileUpload `npm i express-fileupload --save`

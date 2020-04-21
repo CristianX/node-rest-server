@@ -7,6 +7,7 @@ const app = express();
 // Aquí vienen las rutas
 app.use(require('./usuario'));
 app.use(require('./login'));
+app.use(require('./categoria'));
 
 
 

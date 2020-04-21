@@ -6,8 +6,7 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 
-// Validador unico para mostrar mensaje de correo duplicado
-const uniqueValidator = require('mongoose-unique-validator');
+
 
 
 // Declaración de esquema

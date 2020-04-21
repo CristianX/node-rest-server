@@ -18,7 +18,9 @@ const Categoria = require('../models/categoria');
 // =================================
 app.get('/categoria', verificaToken, (req, res) => {
 
-    Categoria.find().exec((err, categorias) => {
+    // populate sirve para revisar que ids existen en la categoria y permite cargar información
+    // sort ordena los items en forma alfabética por el parámetro descripción
+    Categoria.find().sort('descripcion').populate('usuario', 'nombre email').exec((err, categorias) => {
         if (err) {
             return res.status(400).json({
                 ok: false,

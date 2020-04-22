@@ -52,7 +52,7 @@ let verificaAdmin_Role = (req, res, next) => {
 }
 
 //===========================
-//Verificar Token para imagen
+//Verificar Token para imagen desde url
 //===========================
 let verificaTokenImg = (req, res, next) => {
 

@@ -16,7 +16,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Importando models
-const usuario = require('../models/usuario');
+const Usuario = require('../models/usuario');
+const Producto = require('../models/producto');
+
 
 // Actualizar imagen
 app.put('/upload/:tipo/:id', (req, res) => {
@@ -70,27 +72,35 @@ app.put('/upload/:tipo/:id', (req, res) => {
     }
 
     // Cabiar nombre al archivo
-    let nombreArchivo = `${id}-${ new Date().getMilliseconds() }.${extension}`
+    let nombreArchivo = `${id}-${ new Date().getMilliseconds() }.${extension}`;
 
 
     // Use the mv() method to place the file somewhere on your server
     archivo.mv(`uploads/${ tipo }/${nombreArchivo}`, (err) => {
-        if (err)
+        if (err) {
             return res.status(500).json({
                 ok: false,
                 err
             });
+        }
 
-        // Aquí imagen cargada
-        // Se almacena solo el nombre del archivo para la base de datos
-        imagenUsuario(id, res, nombreArchivo);
+        if (tipo !== 'usuarios') {
+            // Aquí imagen cargada
+            // Se almacena solo el nombre del archivo para la base de datos
+            imagenProducto(id, res, nombreArchivo);
+        } else {
+            // Aquí imagen cargada
+            // Se almacena solo el nombre del archivo para la base de datos
+            imagenUsuario(id, res, nombreArchivo);
+        }
+
 
     });
 });
 
 function imagenUsuario(id, res, nombreArchivo) {
 
-    usuario.findById(id, (err, usuarioDB) => {
+    Usuario.findById(id, (err, usuarioDB) => {
         if (err) {
             // Borrando archivo desde la funcion (hay que borrar desde aqui por que aun que de error la imagen si se sube)
             borraArchivo(nombreArchivo, 'usuarios');
@@ -114,6 +124,7 @@ function imagenUsuario(id, res, nombreArchivo) {
         // Borrando archivo desde la funcion
         borraArchivo(usuarioDB.img, 'usuarios');
 
+        // Guardando nombre del archivo en el campo img
         usuarioDB.img = nombreArchivo;
 
         // Guardando imagen en la bdd
@@ -131,7 +142,49 @@ function imagenUsuario(id, res, nombreArchivo) {
 
 }
 
-function imagenProducto() {
+
+function imagenProducto(id, res, nombreArchivo) {
+
+    Producto.findById(id, (err, productoDB) => {
+        if (err) {
+            // Borrando archivo desde la funcion (hay que borrar desde aqui por que aun que de error la imagen si se sube)
+            // 'productos' es el nombre de la carpeta donde almacena las imagenes
+            borraArchivo(nombreArchivo, 'productos');
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!productoDB) {
+            // Borrando archivo desde la funcion (hay que borrar desde aqui por que aun que de error la imagen si se sube)
+            borraArchivo(nombreArchivo, 'productos');
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Producto no existe'
+                }
+            });
+        }
+
+        // Borrando archivo desde la funcion
+        borraArchivo(productoDB.img, 'productos');
+
+        // Guardando nombre del archivo en el campo img
+        productoDB.img = nombreArchivo;
+
+        // Guardando imagen en la bdd
+        productoDB.save((err, productoGuardado) => {
+            res.json({
+                ok: true,
+                producto: productoGuardado,
+                img: nombreArchivo
+            });
+        });
+
+
+
+    });
 
 }
 

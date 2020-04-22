@@ -51,8 +51,38 @@ let verificaAdmin_Role = (req, res, next) => {
     next();
 }
 
+//===========================
+//Verificar Token para imagen
+//===========================
+let verificaTokenImg = (req, res, next) => {
+
+    let token = req.query.token;
+
+
+    // Verificando si el token es válido
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+
+        if (err) {
+            // Error 401, desautorizado
+            return res.status(401).json({
+                ok: false,
+                err: {
+                    message: 'Autenticación inválida'
+                }
+            });
+        }
+
+        // Dentro del objeto encryptado, viene el usuario (Payload)
+        req.usuario = decoded.usuario;
+        next();
+
+    });
+
+}
+
 // Para funciones el export es asi
 module.exports = {
     verificaToken,
-    verificaAdmin_Role
+    verificaAdmin_Role,
+    verificaTokenImg
 }

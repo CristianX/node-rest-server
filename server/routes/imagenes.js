@@ -10,11 +10,11 @@ const path = require('path');
 
 
 // Middlewares epersonalizados
-const { verificaToken } = require('../middlewares/autenticacion');
+const { verificaTokenImg } = require('../middlewares/autenticacion');
 
 
 // Ruta para desplegar informació
-app.get('/imagen/:tipo/:img', verificaToken, (req, res) => {
+app.get('/imagen/:tipo/:img', verificaTokenImg, (req, res) => {
 
     // Obteniendo paramatros de la url
     let tipo = req.params.tipo;

@@ -9,6 +9,11 @@ const fileUpload = require('express-fileupload');
 // Middleware de file upload
 app.use(fileUpload({ useTempFiles: true }));
 
+// File System para ver archivos del directorio del servidor (public, server, etc) (fs existe por defecto e node)
+const fs = require('fs');
+
+// Importando path para poder llegar al uploads desde las rutas (path existe por defecto en node)
+const path = require('path');
 
 // Importando models
 const usuario = require('../models/usuario');
@@ -87,6 +92,8 @@ function imagenUsuario(id, res, nombreArchivo) {
 
     usuario.findById(id, (err, usuarioDB) => {
         if (err) {
+            // Borrando archivo desde la funcion (hay que borrar desde aqui por que aun que de error la imagen si se sube)
+            borraArchivo(nombreArchivo, 'usuarios');
             return res.status(500).json({
                 ok: false,
                 err
@@ -94,6 +101,8 @@ function imagenUsuario(id, res, nombreArchivo) {
         }
 
         if (!usuarioDB) {
+            // Borrando archivo desde la funcion (hay que borrar desde aqui por que aun que de error la imagen si se sube)
+            borraArchivo(nombreArchivo, 'usuarios');
             return res.status(400).json({
                 ok: false,
                 err: {
@@ -101,6 +110,9 @@ function imagenUsuario(id, res, nombreArchivo) {
                 }
             });
         }
+
+        // Borrando archivo desde la funcion
+        borraArchivo(usuarioDB.img, 'usuarios');
 
         usuarioDB.img = nombreArchivo;
 
@@ -121,6 +133,17 @@ function imagenUsuario(id, res, nombreArchivo) {
 
 function imagenProducto() {
 
+}
+
+function borraArchivo(nombreImagen, tipo) {
+    // Construyendo un path para llegar a uploads
+    let pathImagen = path.resolve(__dirname, `../../uploads/${ tipo }/${ nombreImagen }`);
+
+    // Evaluando si existe en el file system
+    if (fs.existsSync(pathImagen)) {
+        // Borrando archivo de filesystem
+        fs.unlinkSync(pathImagen);
+    }
 }
 
 

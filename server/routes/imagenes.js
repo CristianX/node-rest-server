@@ -9,22 +9,34 @@ const fs = require('fs');
 const path = require('path');
 
 
+// Middlewares epersonalizados
+const { verificaToken } = require('../middlewares/autenticacion');
+
+
 // Ruta para desplegar informació
-app.get('/imagen/:tipo/:img', (req, res) => {
+app.get('/imagen/:tipo/:img', verificaToken, (req, res) => {
 
     // Obteniendo paramatros de la url
     let tipo = req.params.tipo;
     let img = req.params.img;
 
 
-    // Añadiendo pagth donde se encuentran las imagenes
-    let pathImg = `./uploads/${ tipo }/${ img }`;
 
-    // __dirname se utiliza con path
-    let noImagePath = path.resolve(__dirname, '../assets/no-image.jpg')
+    // Construyendo un path para llegar a uploads
+    let pathImagen = path.resolve(__dirname, `../../uploads/${ tipo }/${ img }`);
 
-    // Lee el contentType de un archivo y la regresa
-    res.sendFile(noImagePath);
+
+    if (fs.existsSync(pathImagen)) {
+        res.sendFile(pathImagen);
+    } else {
+        // __dirname se utiliza con path
+        let noImagePath = path.resolve(__dirname, '../assets/no-image.jpg')
+
+        // Lee el contentType de un archivo y la regresa
+        res.sendFile(noImagePath);
+    }
+
+
 
 
 
